@@ -1,19 +1,24 @@
 function uploadXlsxFile() {
-	var elements = 'iput-file-upload';
+
+	var elements = 'input-xlsx-file-upload';
 	var fileLists = document.getElementById(elements).files;
-	console.log(document.getElementById(elements).files[0]);
-	if (fileLists.length <= 0) {
-		console.log('文件为空');
+	if (fileLists.length <= 0 || typeof(fileLists) == 'undefined') {
+		alert('excel文件为空')
 		return;
 	}
 
+	var txtElementId = 'input-txt-file-upload';
+	var txtFileObjs = document.getElementById(txtElementId).files;
+
+	// if txtFileObjs.length <= 0 || typeof(txtFileObjs) == 'undefined' {
+	// 	alert('txt文件为空')
+	// 	return;
+	// }
+
 	var formData = new FormData();
 
-	formData.append("file",fileLists[0]);
-	formData.append("id", elements);
-	formData.append("type", fileLists[0]['type']);
-
-	console.log(formData.contentType)
+	formData.append("xlsxFile",fileLists[0]);
+	formData.append("txtFile",txtFileObjs[0]);
 
 	$.ajax({
 		url: '/api/v0/file/upload/xlsx',

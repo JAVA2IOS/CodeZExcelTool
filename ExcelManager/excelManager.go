@@ -1,36 +1,34 @@
 package excelManager
 
 import (
-	"../tool/yaml/controller"
-	"../tool/excel/service"
+	"codezexcel/CodeZExcelTool/tool/excel/service"
+	"codezexcel/CodeZExcelTool/tool/yaml/controller"
 	"github.com/tealeg/xlsx"
-	"../tool/file"
-	"time"
+	"codezexcel/CodeZExcelTool/tool/file"
 	"errors"
 	"log"
-	"../config"
 )
 
-func DJsTextMatchXlsxFile() (bool, error){
+func DJsTextMatchXlsxFile(xlsxFilePath string, textFilePath string, targetFileName string) (string, error){
 	reader, _ := yamlReader.Instance()
 
-	sheet := excel.ReadFilteredExcelFile(reader.Configure.Xlsx.AbsolutePath)
+	sheet := excel.ReadFilteredExcelFile(xlsxFilePath)
 
 
-	txtStrings := fileReader.ReadTxtFile(reader.Configure.Xlsx.MatchFilePath)
+	txtStrings := fileReader.ReadTxtFile(textFilePath)
 	if txtStrings == nil {
-		return false, errors.New("txt文件[" + reader.Configure.Xlsx.MatchFilePath + "]读取错误")
+		return "", errors.New("txt文件[" + xlsxFilePath + "]读取错误")
 	}
 
 	if sheet == nil {
-		return false, errors.New("xlsx文件" + reader.Configure.Xlsx.AbsolutePath + "读取失败")
+		return "", errors.New("xlsx文件" + textFilePath + "读取失败")
 	}
 
 	newFile := xlsx.NewFile()
 	newSheet, err := newFile.AddSheet("newSheet")
 	if err != nil {
 		log.Panicln("新建excel文件清单失败")
-		return false, errors.New("新建清单失败:" + err.Error())
+		return "", errors.New("新建清单失败:" + err.Error())
 	}
 
 	for rowIndex, row := range sheet.Rows {
@@ -60,17 +58,18 @@ func DJsTextMatchXlsxFile() (bool, error){
 	}
 
 	if len(newSheet.Rows) == 0 {
-		return false, errors.New("匹配数据失败")
+		return "", errors.New("匹配数据失败")
 	}
 
-	newFileName := time.Now().Format(gloableConfig.TimeForamt_yyyy_MM_dd_hh_mm_ss) + "." + excel.FileTypeXlsx
-	newFilePath := reader.Configure.Xlsx.SavedDirctory + newFileName
+	newFilePath := reader.Configure.Xlsx.SavedDirctory + targetFileName
 
 	newErr := newFile.Save(newFilePath)
+
 	if err != nil {
 		log.Printf("创建文件失败[%v]\n", newErr.Error())
-		return false, errors.New("创建文件" + newFilePath + "失败:" + err.Error())
+		return "", errors.New("创建文件" + newFilePath + "失败:" + err.Error())
 	}
 
-	return true, nil
+
+	return newFilePath, nil
 }

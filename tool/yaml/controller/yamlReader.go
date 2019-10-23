@@ -1,7 +1,7 @@
 package yamlReader
 
 import (
-	"../model"
+	"codezexcel/CodeZExcelTool/tool/yaml/model"
 	"io/ioutil"
 	"log"
 	"gopkg.in/yaml.v2"

@@ -3,7 +3,7 @@ package main
 import (
 	"net/http"
 	"log"
-	"codezexcel/CodeZExcelTool/service/file"
+	"codezexcel/CodeZExcelTool/controller/file"
 	"html/template"
 )
 
@@ -25,6 +25,7 @@ func HTMLPageRouter(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	http.Handle("/view/web/", http.StripPrefix("/view/web/", http.FileServer(http.Dir("view/web"))))
+	http.Handle("/download/", http.StripPrefix("/download/", http.FileServer(http.Dir("download"))))
 	// index
 	http.HandleFunc("/", HTMLPageRouter)
 	http.HandleFunc("/index", HTMLPageRouter)

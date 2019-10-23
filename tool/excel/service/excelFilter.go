@@ -1,7 +1,7 @@
 package excel
 
 import (
-	"../dao"
+	"codezexcel/CodeZExcelTool/tool/excel/dao"
 	"github.com/tealeg/xlsx"
 )
 
